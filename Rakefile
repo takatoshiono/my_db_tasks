@@ -29,6 +29,21 @@ namespace :db do
       ActiveRecord::Base.dump_schema_after_migration = false
     end
   end
+
+  namespace :structure do
+    desc "Remove AUTO_INCREMENT table option from the db/structure.sql file"
+    task :remove_auto_increment_table_option do
+      ActiveRecord::Base.logger.debug "Remove AUTO_INCREMENT table option from the db/structure.sql file"
+      structure = File.read('./db/structure.sql').gsub(/\sAUTO_INCREMENT=\d+/, '')
+      File.open('./db/structure.sql', 'w') do |f|
+        f.write(structure)
+      end
+    end
+  end
 end
 
 load "active_record/railties/databases.rake"
+
+Rake::Task['db:structure:dump'].enhance do
+  Rake::Task['db:structure:remove_auto_increment_table_option'].invoke
+end

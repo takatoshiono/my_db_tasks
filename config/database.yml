@@ -1,0 +1,10 @@
+defaults: &defaults
+  adapter: mysql2
+
+development:
+  <<: *defaults
+  host: localhost
+  username: root
+  password:
+  database: my_db_tasks_development
+  port: 3306

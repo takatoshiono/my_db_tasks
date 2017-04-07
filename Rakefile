@@ -2,6 +2,7 @@ require "bundler/gem_tasks"
 require "rspec/core/rake_task"
 require "yaml"
 require "active_record"
+require "my_db_tasks/seed_loader"
 
 RSpec::Core::RakeTask.new(:spec)
 
@@ -14,6 +15,7 @@ task :environment do
   ActiveRecord::Base.logger = Logger.new(STDOUT)
   ActiveRecord::Base.schema_format = :sql
   ActiveRecord::Base.establish_connection(db_config[env])
+  ActiveRecord::Tasks::DatabaseTasks.seed_loader = MyDbTasks::SeedLoader.new(db_config[env])
 end
 
 namespace :db do

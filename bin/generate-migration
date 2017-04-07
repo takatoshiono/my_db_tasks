@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+
+$LOAD_PATH << './lib'
+require 'my_db_tasks/migration_generator'
+
+class GenerateMigration
+  def initialize(argv)
+    if argv.size > 0
+      @migration_name = argv[0]
+    else
+      show_usage
+      exit
+    end
+  end
+
+  def process
+    generator = MyDbTasks::MigrationGenerator.new(@migration_name)
+    generator.create_migration_file
+  end
+
+  def show_usage
+    puts "Usage: #{$0} MIGRATION_NAME"
+  end
+end
+
+GenerateMigration.new(ARGV).process

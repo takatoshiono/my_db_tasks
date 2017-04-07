@@ -22,7 +22,7 @@ namespace :db do
 
     ActiveRecord::Tasks::DatabaseTasks.db_dir = 'db'
     ActiveRecord::Tasks::DatabaseTasks.database_configuration = db_config
-    ActiveRecord::Tasks::DatabaseTasks.migrations_paths = 'db/migrate'
+    ActiveRecord::Tasks::DatabaseTasks.migrations_paths = ['db/migrate']
     ActiveRecord::Tasks::DatabaseTasks.root = Pathname.new(Dir.pwd)
 
     if env != 'development'

@@ -3,6 +3,7 @@ require "rspec/core/rake_task"
 require "yaml"
 require "active_record"
 require "my_db_tasks/seed_loader"
+require "my_db_tasks/master_data_tasks"
 
 RSpec::Core::RakeTask.new(:spec)
 
@@ -48,4 +49,30 @@ load "active_record/railties/databases.rake"
 
 Rake::Task['db:structure:dump'].enhance do
   Rake::Task['db:structure:remove_auto_increment_table_option'].invoke
+end
+
+namespace :my_db_tasks do
+  namespace :master_data do
+    task :load_config do
+      MyDbTasks::MasterDataTasks.logger = Logger.new(STDOUT)
+      MyDbTasks::MasterDataTasks.db_config = db_config[env]
+    end
+
+    desc "Create master data sql files in db/master_data/sql directory"
+    task :dump => [:load_config] do
+      MyDbTasks::MasterDataTasks.dump
+    end
+
+    desc "Creates master data"
+    task :create => [:load_config] do
+      MyDbTasks::MasterDataTasks.create
+    end
+
+    desc "Drops master data"
+    task :drop => [:load_config] do
+      MyDbTasks::MasterDataTasks.drop
+    end
+
+    task :reset => ['my_db_tasks:master_data:drop', 'my_db_tasks:master_data:create']
+  end
 end
